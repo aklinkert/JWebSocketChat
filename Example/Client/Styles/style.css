@@ -1,0 +1,98 @@
+div {
+	overflow: visible;
+}
+
+.content {
+}
+
+
+.content_top {
+	width: 100%;
+	height: 85%;
+}
+
+.content_bottom {
+	width: 100%;
+	height: 13%;
+}
+
+.messageOutput {
+	float: left;
+	width: 80%;
+	height: 100%;
+	border: 1px solid black;
+	overflow: auto;
+}
+
+.spacer {
+	float:left;
+	height: 100%;
+	width: 1%;
+}
+	
+.userList {
+	float: left;
+	width: 18%;
+	height: 100%;
+	border: 1px solid black;
+	overflow: auto;
+}
+
+
+.content_spacer {
+	width: 100%;
+	height: 2%;
+}
+
+.content_right {
+	width: 100%;
+	height: 8%;
+}
+
+
+.content_bottom_input {
+	float: left;
+	width: 80%;
+	height: 100%;
+	vertical-align: top;
+}
+
+.content_bottom_spacer {
+	float:left;
+	height: 100%;
+	width: 1%;
+}
+
+.content_bottom_name {
+	float: left;
+	width: 18%;
+	height: 100%;
+}
+
+.content_bottom_name_label{
+	float: left;
+	height: 100%;
+	width: 30%;
+}
+
+.content_bottom_name_spacer{
+	float: left;
+	height: 100%;
+	width: 10%;
+}
+
+.content_bottom_name_input{
+	float: left;
+	height: 100%;
+	width: 60%;
+}
+
+.float{
+	float:left;
+	width: auto;
+	height: auto;
+}
+
+textarea {
+    resize: none;
+}

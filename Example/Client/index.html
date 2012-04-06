@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="de-DE">
+<head>
+<title>JSWSMCC - JavaScript WebSocket MultiCast Chat</title>
+
+<!-- ##### META INFORMATIONEN ##### -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script type="text/javascript">
+		WEB_SOCKET_SWF_LOCATION = "/JavaScript/FlashFallback/WebSocketMain.swf";
+		//WEBSOCKET_URL_JSWSMCC = "ws://jsserver.arda-network.de:1337";
+		WEBSOCKET_URL_JSWSMCC = "ws://jsserver.arda-network.de:1337"; //"ws://localhost:1337";
+</script>
+
+<!--external includes -->
+<script type="text/javascript" src="JavaScript/Include/jquery.min.js"></script>
+<script type="text/javascript" src="JavaScript/FlashFallback/swfobject.js"></script>
+<script type="text/javascript" src="JavaScript/FlashFallback/web_socket.js"></script>
+
+<!--  GENERAL: functions and Objects -->
+<script type="text/javascript" src="JavaScript/General/functions.js"></script>
+
+<!--  OBJECTS: SocketConnection, MessageHandler and Project Object  -->
+<script type="text/javascript" src="JavaScript/Objects/SocketConnectionHandlerObject.js"></script>
+<script type="text/javascript" src="JavaScript/Objects/MessageHandlerObject.js"></script>
+<script type="text/javascript" src="JavaScript/Objects/JSWSMCCObject.js"></script>
+
+<!-- CSS import -->
+<link rel="stylesheet" href="Styles/style.css" type="text/css" />
+
+</head>
+<body>
+	<div class="content">
+		<div class="content_top">
+			<div class="messageOutput" id="messageOutput">Welcome to the JSWSMCC. Please enter a name and click the connect-Button.</div>
+			<div class="spacer"></div>
+			<div class="userList" id="userList"></div>
+		</div>
+		<div class="content_spacer"></div>
+		<div class="content_bottom">
+			<div class="content_bottom_input">
+				<div class="float">
+					<input type="text" name="messageInput" id="messageInput" size="50" class="toEnable" disabled="disabled" />
+				</div>
+				<div class="float">
+					<input type="button" class="messageInputSubmit toEnable" id="messageInputSubmit" value="send mesage" disabled="disabled" />
+				</div>
+			</div>
+			<div class="content_bottom_spacer"></div>
+			<div class="content_bottom_name">
+				<div>
+					<div class="content_bottom_name_label">Your name:</div>
+					<div class="content_bottom_name_spacer"></div>
+					<div class="content_bottom_name_input">
+						<input type="text" name="nameInput" id="nameInput" size="25" maxlength="25" />
+					</div>
+				</div>
+				<div>
+					<div class="content_bottom_name_label">Server:</div>
+					<div class="content_bottom_name_spacer"></div>
+					<div class="content_bottom_name_input">
+						<input type="text" name="urlInput" id="urlInput" size="25" maxlength="25" class="toDisable" />
+					</div>
+				</div>
+				<div>
+					<input type="button" name="connect" id="btnConnect" value="Connect"  class="toDisable" />
+					<input type="button" name="disconnect" id="btnDisconnect" value="Disconnect"  class="toEnable" disabled="disabled" />
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
