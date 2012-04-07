@@ -41,7 +41,7 @@ At first you need your own Design which should contain the following Elements (E
 
 Now you have to create an instance of the MessageHandlerObject and pass your Elements in a object containing jQuery objects. If the Input field for the message or other objects should be enabled or disabled if connection is lost or not established you've got the possibillity to pass it either. you **MUST** pass all the options. If you don't wan't the functionality you have to pass an empty jQuery container (e.g. $("&lt;div&gt;")).
 
-The initialisation of the MessageHandlerObject could be look like this:
+The initialisation of the MessageHandlerObject has to look like this:
 
 ```JavaScript
 messageHandler = new MessageHandlerObject ( {
