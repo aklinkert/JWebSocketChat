@@ -1,5 +1,3 @@
-package server;
-
 public class ConnectionContext {
 	private String name = null;
 	private boolean nameSet = false;
