@@ -39,7 +39,7 @@ At first you need your own Design which should contain the following Elements (E
 * (Connect Button)
 * (Disconnect Button)
 
-Now you have to create an instance of the MessageHandlerObject and pass your Elements in a object containing jQuery objects. If the Input field for the message or other objects should be enabled or disabled if connection is lost or not established you've got the possibillity to pass it either. you **MUST** pass all the options. If you don't wan't the functionality you have to pass an empty jQuery container (e.g. $("<div>")).
+Now you have to create an instance of the MessageHandlerObject and pass your Elements in a object containing jQuery objects. If the Input field for the message or other objects should be enabled or disabled if connection is lost or not established you've got the possibillity to pass it either. you **MUST** pass all the options. If you don't wan't the functionality you have to pass an empty jQuery container (e.g. $("&lt;div&gt;")).
 
 The initialisation of the MessageHandlerObject could be look like this:
 
@@ -66,12 +66,12 @@ What are this parameters for?
 
 * *container*: The container in which the messages and outputs should be placed in.
 * *inputField*: The input field the user types new messages in.
-* *inputSubmitButton*: The send-button. If you don't want a "send"-Button in your Design you are able to pass a object like this: $("<input type="text" />").
+* *inputSubmitButton*: The send-button. If you don't want a "send"-Button in your Design you are able to pass a object like this: $("&lt;input type="text" /&gt;").
 * *userList*: The container in which the connected users will be shown in.
-* *toEnable*: A set containing elements to enable when the connection is established. This paramter is optional and can be given with f.e. an empty div ($("<div>").
-* *toDisable*: A set containing elements to disable when the connection is established. This paramter is optional and can be given with f.e. an empty div ($("<div>").
+* *toEnable*: A set containing elements to enable when the connection is established. This paramter is optional and can be given with f.e. an empty div ($("&lt;div&gt;").
+* *toDisable*: A set containing elements to disable when the connection is established. This paramter is optional and can be given with f.e. an empty div ($("&lt;div&gt;").
 * *nameInput*: The input field where the user has to enter his name in.
-* *urlInput*: An input field for the server URI. If you want to force the usage of a server then you could pass an generated input field with the server URI instead (like this: $("<input type="text" />")
+* *urlInput*: An input field for the server URI. If you want to force the usage of a server then you could pass an generated input field with the server URI instead (like this: $("&lt;input type="text" /&gt;")
 * *connectButton*: The button used to connect to the server. Could be triggered by script.
 * *disconnectButton*: The button used to disconnect from server.
 * *noUserID*: The id for the "No users in Chat." entry.
@@ -82,3 +82,5 @@ Browser Compatibility
 ---------------------
 
 If you care for the browsers which don't have native WebSocket support yet you can additionally include the files provided by [web-socket-js](https://github.com/gimite/web-socket-js "web-socket-js"). Those scripts will try to establish WebSocket connections using Flash when necessary.
+
+Please consider that some browsers only allow Flash socket connections to port 843 because of Flash policy restrictions.
