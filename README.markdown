@@ -45,37 +45,39 @@ The initialisation of the MessageHandlerObject could be look like this:
 
 ```JavaScript
 messageHandler = new MessageHandlerObject ( {
+	// The container in which the messages and outputs should be placed in.
 	container: $ ( "#messageOutput" ) ,
+	// The input field the user types new messages in.
 	inputField: $ ( "#messageInput" ) ,
+	// The send-button. If you don't want a "send"-Button in your Design you
+	// are able to pass a object like this: $("&lt;input type="text" /&gt;").
 	inputSubmitButton: $ ( "#messageInputSubmit" ) ,
+	// The container in which the connected users will be shown in.
 	userList: $ ( "#userList" ) ,
+	// A set containing elements to enable when the connection is established.
+	// This paramter is optional and can be given with f.e. an empty div ($("&lt;div&gt;").
 	toEnable: $ ( ".toEnable" ) ,
+	// A set containing elements to disable when the connection is established.
+	// This paramter is optional and can be given with f.e. an empty div ($("&lt;div&gt;")
 	toDisable: $ ( ".toDisable" ) ,
+	// The input field where the user has to enter his name in.
 	nameInput: $ ( "#nameInput" ) ,
+	// An input field for the server URI. If you want to force the usage of a
+	// server then you could pass an generated input field with the server URI
+	// instead (like this: $("&lt;input type="text" /&gt;").
 	urlInput: $ ( "#urlInput" ) ,
+	// The button used to connect to the server. Could be triggered by script.
 	connectButton: $ ( "#btnConnect" ) ,
+	// The button used to disconnect from server.
 	disconnectButton: $ ( "#btnDisconnect" ) ,
+	// The id for the "No users in Chat." entry.
 	noUserID: "nouser",
+	// The "No users in Chat." label (text within the div with the id given with *noUserID*).
 	nouserEntry: "No user in Chat."
 } );
 
 messageHandler.init ( );
 ```
-
-What are this parameters for?
-
-* *container*: The container in which the messages and outputs should be placed in.
-* *inputField*: The input field the user types new messages in.
-* *inputSubmitButton*: The send-button. If you don't want a "send"-Button in your Design you are able to pass a object like this: $("&lt;input type="text" /&gt;").
-* *userList*: The container in which the connected users will be shown in.
-* *toEnable*: A set containing elements to enable when the connection is established. This paramter is optional and can be given with f.e. an empty div ($("&lt;div&gt;").
-* *toDisable*: A set containing elements to disable when the connection is established. This paramter is optional and can be given with f.e. an empty div ($("&lt;div&gt;").
-* *nameInput*: The input field where the user has to enter his name in.
-* *urlInput*: An input field for the server URI. If you want to force the usage of a server then you could pass an generated input field with the server URI instead (like this: $("&lt;input type="text" /&gt;")
-* *connectButton*: The button used to connect to the server. Could be triggered by script.
-* *disconnectButton*: The button used to disconnect from server.
-* *noUserID*: The id for the "No users in Chat." entry.
-* *nouserEntry*: The "No users in Chat." label (text within the div with the id given with *noUserID*).
 
 
 Browser Compatibility
