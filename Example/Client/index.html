@@ -3,27 +3,55 @@
 <head>
 <title>JSWSMCC - JavaScript WebSocket MultiCast Chat</title>
 
-<!-- ##### META INFORMATIONEN ##### -->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
 <script type="text/javascript">
 		WEB_SOCKET_SWF_LOCATION = "/JavaScript/FlashFallback/WebSocketMain.swf";
-		//WEBSOCKET_URL_JSWSMCC = "ws://jsserver.arda-network.de:1337";
-		WEBSOCKET_URL_JSWSMCC = "ws://jsserver.arda-network.de:1337"; //"ws://localhost:1337";
+		WEBSOCKET_URL = "ws://jsserver.arda-network.de:1337";
 </script>
 
-<!--external includes -->
+<!-- External includes: FlashFallback and jQuery -->
 <script type="text/javascript" src="JavaScript/Include/jquery.min.js"></script>
 <script type="text/javascript" src="JavaScript/FlashFallback/swfobject.js"></script>
 <script type="text/javascript" src="JavaScript/FlashFallback/web_socket.js"></script>
 
-<!--  GENERAL: functions and Objects -->
-<script type="text/javascript" src="JavaScript/General/functions.js"></script>
-
-<!--  OBJECTS: SocketConnection, MessageHandler and Project Object  -->
+<!-- OBJECTS: SocketConnection, MessageHandler and Project Object  -->
 <script type="text/javascript" src="JavaScript/Objects/SocketConnectionHandlerObject.js"></script>
 <script type="text/javascript" src="JavaScript/Objects/MessageHandlerObject.js"></script>
-<script type="text/javascript" src="JavaScript/Objects/JSWSMCCObject.js"></script>
+<script type="text/javascript">
+
+$ ( document ).ready ( function ( ) {
+	
+	$ ( ".content" ).css ( {
+	"height": ( window.innerHeight * 0.9 ) ,
+	"width": ( window.innerWidth * 0.9 ) ,
+	"margin-top": ( window.innerHeight * 0.05 ) ,
+	"margin-left": ( window.innerWidth * 0.05 )
+	} );
+	
+	$ ( "#urlInput" ).val ( WEBSOCKET_URL );
+	
+	// The constructor needs a Settings-Object being given
+	messageHandler = new MessageHandlerObject ( {
+		container: $ ( "#messageOutput" ) ,
+		inputField: $ ( "#messageInput" ) ,
+		inputSubmitButton: $ ( "#messageInputSubmit" ) ,
+		userList: $ ( "#userList" ) ,
+		toEnable: $ ( ".toEnable" ) ,
+		toDisable: $ ( ".toDisable" ) ,
+		nameInput: $ ( "#nameInput" ) ,
+		urlInput: $ ( "#urlInput" ) ,
+		connectButton: $ ( "#btnConnect" ) ,
+		disconnectButton: $ ( "#btnDisconnect" ) ,
+		noUserID: "nouser",
+		nouserEntry: "No user in Chat."
+	} );
+	
+	messageHandler.init ( );
+	
+} );
+
+</script>
 
 <!-- CSS import -->
 <link rel="stylesheet" href="Styles/style.css" type="text/css" />
