@@ -1,3 +1,5 @@
+package Server;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -10,8 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketServer;
 import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 
 public class Server extends WebSocketServer {
 
@@ -84,8 +86,6 @@ public class Server extends WebSocketServer {
 		} catch ( NotYetConnectedException e ) {
 			e.printStackTrace();
 		} catch ( IllegalArgumentException e ) {
-			e.printStackTrace();
-		} catch ( InterruptedException e ) {
 			e.printStackTrace();
 		}
 	}
