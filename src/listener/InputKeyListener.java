@@ -13,12 +13,12 @@ public class InputKeyListener implements KeyListener {
 		this.client = client;
 	}
 	public void keyTyped( KeyEvent event ) {
-		if( event.getKeyCode() == KeyEvent.VK_ENTER )
-			client.sendMessage();
+
 	}
 
 	public void keyPressed( KeyEvent event ) {
-
+		if( event.getKeyCode() == KeyEvent.VK_ENTER )
+			client.sendMessage();
 	}
 
 	public void keyReleased( KeyEvent event ) {

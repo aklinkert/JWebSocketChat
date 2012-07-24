@@ -1,13 +1,14 @@
 package gui;
 
-import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.TextArea;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,23 +17,61 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-public class Window {
+public class Window extends GUI {
+	{
+		try {
+			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+	}
 
 	private JFrame frame;
 	private TextArea output = new TextArea(), userlist = new TextArea();
 	private JTextField connInputField = new JTextField(), nameInputField = new JTextField(), messageInputField = new JTextField();
 	private JButton sendButton = new JButton( "Send" ), closeButton = new JButton( "Close" ), clearButton = new JButton( "Clear" ), connectButton = new JButton( "connect" );
-	private JPanel connectionPanel = new JPanel(), MessageInputPanel = new JPanel(), outputPanel = new JPanel();
+	private JPanel connectionPanel = new JPanel(), messageInputPanel = new JPanel(), outputPanel = new JPanel();
 
 	private int windowHeight = 525, windowWidth = 1000;
 
-	public Window() {
+	public void addClearListener( ActionListener l ) {
+		clearButton.addActionListener( l );
+	}
 
-		try {
-			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-		} catch ( Exception e ) {
-		}
+	public void addCloseListener( ActionListener l ) {
+		closeButton.addActionListener( l );
+	}
 
+	public void addConnectListener( ActionListener l ) {
+		connectButton.addActionListener( l );
+	}
+
+	public void addInputListener( KeyListener l ) {
+		messageInputField.addKeyListener( l );
+	}
+
+	public void addNameChangeListener( FocusListener l ) {
+		nameInputField.addFocusListener( l );
+	}
+
+	public void addOutputText( String text ) {
+
+		output.append( ( output.getText().length() > 0 ? "\n" : "" ) + text );
+	}
+
+	public void addSendListener( ActionListener l ) {
+		sendButton.addActionListener( l );
+	}
+
+	public void clearMessageInput() {
+		messageInputField.setText( "" );
+	}
+
+	public void clearOutput() {
+		output.setText( "" );
+	}
+
+	public void draw() {
 		Dimension framesize = new Dimension( windowWidth, windowHeight );
 
 		// Frame Settings
@@ -44,33 +83,39 @@ public class Window {
 		frame.setMaximumSize( framesize );
 		frame.setMinimumSize( framesize );
 		frame.setResizable( false );
-		frame.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
 		Container cont = frame.getContentPane();
 		cont.setLayout( new FlowLayout() );
+		cont.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
 
 		// Panel for output TextAreas
+		outputPanel.setLayout( new FlowLayout() );
+		outputPanel.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
 		outputPanel.add( setSize( new JScrollPane( output, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED ), 650, 400 ) );
 		outputPanel.add( setSize( new JScrollPane( userlist, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER ), 300, 400 ) );
 		cont.add( setSize( outputPanel, 960, 410 ) );
 
 		// Panel for Input TextField and send-Button
-		messageInputField.setColumns( 80 );
-		MessageInputPanel.add( setSize( messageInputField, 850, 28 ) );
-		MessageInputPanel.add( setSize( sendButton, 65, 26 ) );
-		cont.add( setSize( MessageInputPanel, 960, 35 ) );
+		messageInputPanel.setLayout( new FlowLayout() );
+		messageInputPanel.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
+		messageInputField.setColumns( 105 );
+		messageInputPanel.add( setSize( messageInputField, 850, 28 ) );
+		messageInputPanel.add( setSize( sendButton, 100, 28 ) );
+		cont.add( setSize( messageInputPanel, 960, 35 ) );
 
 		// Panel for Connection Options
 		nameInputField.setColumns( 30 );
-		nameInputField.setText( "Your Name" );
-		connInputField.setColumns( 30 );
-		connInputField.setText( "ws://osgiliath.arda-network.de:80" );
+		nameInputField.setText( "Name" );
+		connInputField.setColumns( 40 );
+		connInputField.setText( "ws://localhost:80" );
+		connectionPanel.setLayout( new FlowLayout() );
+		connectionPanel.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
 		connectionPanel.add( setSize( nameInputField, 850, 28 ) );
 		connectionPanel.add( setSize( connInputField, 850, 28 ) );
-		connectionPanel.add( setSize( connectButton, 130, 26 ) );
-		connectionPanel.add( clearButton );
-		connectionPanel.add( closeButton );
+		connectionPanel.add( setSize( connectButton, 130, 28 ) );
+		connectionPanel.add( setSize( clearButton, 110, 28 ) );
+		connectionPanel.add( setSize( closeButton, 120, 28 ) );
 		cont.add( setSize( connectionPanel, 960, 35 ) );
 
 		setDisconnected();
@@ -78,51 +123,17 @@ public class Window {
 		frame.pack();
 		frame.setVisible( true );
 	}
-	private Component setSize( Component comp, int width, int height ) {
-		Dimension d = new Dimension( width, height );
-
-		comp.setSize( d );
-		comp.setPreferredSize( d );
-		comp.setMaximumSize( d );
-		comp.setMinimumSize( d );
-
-		return comp;
-	}
-
-	public void addSendListener( ActionListener l ) {
-		sendButton.addActionListener( l );
-	}
-
-	public void addCloseListener( ActionListener l ) {
-		closeButton.addActionListener( l );
-	}
-
-	public void addClearListener( ActionListener l ) {
-		clearButton.addActionListener( l );
-	}
-
-	public void addConnectListener( ActionListener l ) {
-		connectButton.addActionListener( l );
-	}
-
-	public void addInputListener( KeyListener l ) {
-		messageInputField.addKeyListener( l );
-	}
-
-	public void clearOutput() {
-		output.setText( "" );
-	}
-
-	public void addOutputText( String text ) {
-		output.append( "\n" + text );
-	}
 
 	public String getConnectionInput() {
 		return connInputField.getText();
 	}
 
-	public String getInputText() {
+	public String getMessageInputText() {
 		return messageInputField.getText();
+	}
+
+	public String getNameInputText() {
+		return nameInputField.getText();
 	}
 
 	public void setConnected() {
@@ -145,5 +156,33 @@ public class Window {
 
 		connInputField.setEnabled( true );
 		connectButton.setText( "Connect" );
+
+		userlist.setText( "" );
+	}
+
+	public void setFocusOnMessageInput() {
+		messageInputField.requestFocus();
+	}
+
+	public void setFocusOnNameInput() {
+		nameInputField.requestFocus();
+	}
+
+	public void setNameInputEnabled( Boolean status ) {
+		nameInputField.setEnabled( status );
+	}
+
+	public void setNameInputText( String name ) {
+		nameInputField.setText( name );
+	}
+
+	public void setUserlist( ArrayList<String> list ) {
+		userlist.setText( "" );
+
+		for( String s : list ) {
+			if( !userlist.getText().equals( "" ) )
+				userlist.append( "\n" );
+			userlist.append( s );
+		}
 	}
 }

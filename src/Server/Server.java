@@ -95,7 +95,7 @@ public class Server extends WebSocketServer {
 		InetSocketAddress adress = null;
 
 		try {
-			adress = new InetSocketAddress( InetAddress.getByName( args[ 0 ] ), new Integer( args[ 1 ] ) );
+			adress = new InetSocketAddress( InetAddress.getByName( "0.0.0.0" ), new Integer( args[ 0 ] ) );
 		} catch ( NumberFormatException e ) {
 			e.printStackTrace();
 			System.exit( 1 );

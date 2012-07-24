@@ -14,6 +14,9 @@ public class ConnectListener implements ActionListener {
 	}
 
 	public void actionPerformed( ActionEvent arg0 ) {
-		client.connect();
+		if( client.isConnected() )
+			client.disconnect();
+		else
+			client.connect();
 	}
 }

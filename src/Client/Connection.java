@@ -18,7 +18,7 @@ public class Connection extends WebSocketClient {
 
 	@Override
 	public void onOpen( ServerHandshake handshakedata ) {
-		client.addOutput( "connected" );
+		client.onConnected();
 	}
 
 	@Override
@@ -28,12 +28,12 @@ public class Connection extends WebSocketClient {
 
 	@Override
 	public void onClose( int code, String reason, boolean remote ) {
-		client.disconnect();
+		client.onDisconnected();
 	}
 
 	@Override
 	public void onError( Exception ex ) {
-		client.logError( ex.getMessage(), ex.getStackTrace().toString() );
+		ex.printStackTrace();
 	}
 
 }
