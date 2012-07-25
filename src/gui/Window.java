@@ -18,9 +18,10 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 public class Window extends GUI {
+
 	{
 		try {
-			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+			UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
@@ -99,23 +100,23 @@ public class Window extends GUI {
 		// Panel for Input TextField and send-Button
 		messageInputPanel.setLayout( new FlowLayout() );
 		messageInputPanel.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
-		messageInputField.setColumns( 105 );
+		messageInputField.setColumns( 75 );
 		messageInputPanel.add( setSize( messageInputField, 850, 28 ) );
-		messageInputPanel.add( setSize( sendButton, 100, 28 ) );
+		messageInputPanel.add( setSize( sendButton, 120, 28 ) );
 		cont.add( setSize( messageInputPanel, 960, 35 ) );
 
 		// Panel for Connection Options
-		nameInputField.setColumns( 30 );
+		nameInputField.setColumns( 25 );
 		nameInputField.setText( "Name" );
-		connInputField.setColumns( 40 );
+		connInputField.setColumns( 30 );
 		connInputField.setText( "ws://localhost:80" );
 		connectionPanel.setLayout( new FlowLayout() );
 		connectionPanel.setComponentOrientation( ComponentOrientation.LEFT_TO_RIGHT );
 		connectionPanel.add( setSize( nameInputField, 850, 28 ) );
 		connectionPanel.add( setSize( connInputField, 850, 28 ) );
-		connectionPanel.add( setSize( connectButton, 130, 28 ) );
-		connectionPanel.add( setSize( clearButton, 110, 28 ) );
-		connectionPanel.add( setSize( closeButton, 120, 28 ) );
+		connectionPanel.add( setSize( connectButton, 120, 28 ) );
+		connectionPanel.add( setSize( clearButton, 100, 28 ) );
+		connectionPanel.add( setSize( closeButton, 100, 28 ) );
 		cont.add( setSize( connectionPanel, 960, 35 ) );
 
 		setDisconnected();
