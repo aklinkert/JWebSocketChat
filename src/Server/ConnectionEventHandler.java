@@ -122,8 +122,8 @@ public class ConnectionEventHandler implements Runnable {
 	private void onClose() {
 		if( context.isNameSet() ) {
 			String name = context.getName();
-			server.dispatch( ConnectionEventHandler.Commands.LEFT + " " + name );
 			users.remove( name );
+			server.dispatch( ConnectionEventHandler.Commands.LEFT + " " + name );
 			server.log( name + " left." );
 		}
 	}

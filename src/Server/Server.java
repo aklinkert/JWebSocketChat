@@ -56,18 +56,20 @@ public class Server extends WebSocketServer {
 
 	public void dispatch( String message ) {
 		try {
-			this.sendToAll( message );
+			sendToAll( message );
 		} catch ( InterruptedException e ) {
 			logException( e );
 		}
 	}
 
 	public void sendToAll( String text ) throws InterruptedException {
-		for( WebSocket c : connections() ) {
-			c.send( text );
-		}
-	}
 
+		for( WebSocket c : connections() ) {
+			if( !( c.isClosed() || c.isClosing() ) )
+				c.send( text );
+		}
+
+	}
 	public void onError( WebSocket conn, Exception e ) {
 		logException( e );
 	}

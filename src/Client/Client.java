@@ -47,7 +47,7 @@ public class Client {
 
 		window.addSendListener( new SendListener( this ) );
 		window.addClearListener( new ClearListener( this ) );
-		window.addCloseListener( new CloseListener() );
+		window.addCloseListener( new CloseListener( this ) );
 		window.addConnectListener( new ConnectListener( this ) );
 		window.addInputListener( new InputKeyListener( this ) );
 		window.addNameChangeListener( new NameChangeListener( this ) );
@@ -69,6 +69,11 @@ public class Client {
 
 	public void clear() {
 		window.clearOutput();
+	}
+
+	public void close() {
+		disconnect();
+		System.exit( 0 );
 	}
 
 	public void connect() {
