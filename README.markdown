@@ -13,10 +13,10 @@ You can try JWebSocketChat at [http://jswsmcc.arda-network.de](http://jswsmcc.ar
 Starting the Server
 -------------------
 
-To start the server you have to pass a host and a port. To bind the server to localhost:444 you have to run the following:
+To start the server you have to pass the port. To bind the server to *:444 you have to run the following:
 
 ```bash
-java -jar JWebSocketServer.jar localhost 444
+java -jar JWebSocketServer.jar 444
 ```
 
 
