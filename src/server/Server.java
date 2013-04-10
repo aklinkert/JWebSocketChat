@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -15,37 +15,37 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import Server.ConnectionEventHandler.ConnectionEvent;
+import server.ConnectionEventHandler.ConnectionEvent;
 
 public class Server extends WebSocketServer {
 
-	private List<String> users = Collections.synchronizedList(new ArrayList<String>());
-	private ExecutorService exec = Executors.newCachedThreadPool();
+	private final List<String> users = Collections.synchronizedList(new ArrayList<String>());
+	private final ExecutorService exec = Executors.newCachedThreadPool();
 
 	private boolean started = false;
 
-	public Server(InetSocketAddress address) {
+	public Server(final InetSocketAddress address) {
 		super(address);
 
 		System.out.println("Server ready for Connections.");
 	}
 
 	@Override
-	public void onOpen(WebSocket conn, ClientHandshake handshake) {
+	public void onOpen(final WebSocket conn, final ClientHandshake handshake) {
 		System.out.println("Connection opened.");
 
 		this.exec.submit(new ConnectionEventHandler(this, conn, this.users, ConnectionEvent.OPEN, ""));
 	}
 
 	@Override
-	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+	public void onClose(final WebSocket conn, final int code, final String reason, final boolean remote) {
 		System.out.println("Connection closed.");
 
 		this.exec.submit(new ConnectionEventHandler(this, conn, this.users, ConnectionEvent.CLOSE, ""));
 	}
 
 	@Override
-	public void onMessage(WebSocket conn, String message) {
+	public void onMessage(final WebSocket conn, final String message) {
 		System.out.println("Message recieved: " + message);
 		this.exec.submit(new ConnectionEventHandler(this, conn, this.users, ConnectionEvent.MESSAGE, message));
 	}
@@ -59,7 +59,7 @@ public class Server extends WebSocketServer {
 		new Thread(this).start();
 	}
 
-	public void dispatch(String message) {
+	public void dispatch(final String message) {
 		System.out.println("Dispatching: " + message);
 		try {
 			sendToAll(message);
@@ -68,34 +68,35 @@ public class Server extends WebSocketServer {
 		}
 	}
 
-	public void sendToAll(String text) throws InterruptedException {
+	public void sendToAll(final String text) throws InterruptedException {
 
 		Collection<WebSocket> connections = connections();
 
-		for (WebSocket c : connections) {
-			System.out.println("[Dispatch] Sending message " + text + " to host " + c.getRemoteSocketAddress());
-			if (!(c.isClosed() || c.isClosing())) {
-				c.send(text);
+		synchronized (connections) {
+			for (WebSocket c : connections) {
+				System.out.println("[Dispatch] Sending message " + text + " to host " + c.getRemoteSocketAddress());
+				if (!(c.isClosed() || c.isClosing())) {
+					c.send(text);
+				}
 			}
 		}
-
 	}
 
 	@Override
-	public void onError(WebSocket conn, Exception e) {
+	public void onError(final WebSocket conn, final Exception e) {
 		System.err.println("");
 		logException(e);
 	}
 
-	private void logException(Exception e) {
+	private void logException(final Exception e) {
 		e.printStackTrace();
 	}
 
-	public void log(String message) {
+	public void log(final String message) {
 		System.out.println(message);
 	}
 
-	public void send(WebSocket conn, String message) {
+	public void send(final WebSocket conn, final String message) {
 		System.out.println("Sending: " + message + " to " + conn.getRemoteSocketAddress().toString());
 
 		try {
@@ -107,7 +108,7 @@ public class Server extends WebSocketServer {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		InetSocketAddress adress = null;
 

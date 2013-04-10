@@ -1,4 +1,4 @@
-package Server.connectioncontext;
+package server.connectioncontext;
 
 public final class ConnectionContext {
 	private boolean isNull = false;
@@ -9,7 +9,7 @@ public final class ConnectionContext {
 		return this.isNull;
 	}
 
-	protected void setNull(boolean isNull) {
+	protected void setNull(final boolean isNull) {
 		this.isNull = isNull;
 	}
 

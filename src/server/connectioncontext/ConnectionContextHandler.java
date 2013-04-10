@@ -1,7 +1,7 @@
 /**
  * 
  */
-package Server.connectioncontext;
+package server.connectioncontext;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,15 +20,15 @@ import org.java_websocket.WebSocket;
  */
 public class ConnectionContextHandler {
 
-	private Lock lock = new ReentrantLock();
-	private Condition cond = this.lock.newCondition();
-	private boolean inUse = false;
+	private final Lock lock = new ReentrantLock();
+	private final Condition cond = this.lock.newCondition();
+	private final boolean inUse = false;
 
 	private static ConnectionContextHandler instance;
-	private HashMap<WebSocket, ConnectionContext> contexts = new HashMap<WebSocket, ConnectionContext>();
-	private HashMap<WebSocket, LinkedList<ConnectionContextFuture>> waiters = new HashMap<WebSocket, LinkedList<ConnectionContextFuture>>();
+	private final HashMap<WebSocket, ConnectionContext> contexts = new HashMap<WebSocket, ConnectionContext>();
+	private final HashMap<WebSocket, LinkedList<ConnectionContextFuture>> waiters = new HashMap<WebSocket, LinkedList<ConnectionContextFuture>>();
 
-	private ExecutorService exec = Executors.newCachedThreadPool();
+	private final ExecutorService exec = Executors.newCachedThreadPool();
 
 	public static ConnectionContextHandler getInstance() {
 		if (null == instance) {
@@ -38,7 +38,7 @@ public class ConnectionContextHandler {
 		return instance;
 	}
 
-	public Future<ConnectionContext> getContextFuture(WebSocket s) {
+	public Future<ConnectionContext> getContextFuture(final WebSocket s) {
 		if (this.inUse) {
 			try {
 				this.cond.await();
@@ -82,7 +82,7 @@ public class ConnectionContextHandler {
 
 	}
 
-	public void notifyNext(WebSocket s) {
+	public void notifyNext(final WebSocket s) {
 		if (this.inUse) {
 			try {
 				this.cond.await();
@@ -112,7 +112,7 @@ public class ConnectionContextHandler {
 		}
 	}
 
-	public void giveBack(WebSocket s, ConnectionContext context) {
+	public void giveBack(final WebSocket s, final ConnectionContext context) {
 		context.setNull(false);
 		notifyNext(s);
 	}

@@ -20,26 +20,26 @@ import listener.ConnectListener;
 import listener.InputKeyListener;
 import listener.NameChangeListener;
 import listener.SendListener;
-import Server.ConnectionEventHandler;
+import server.ConnectionEventHandler;
 
 public class Client {
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		new Client();
 	}
 
-	private Window window;
+	private final Window window;
 	private Connection conn;
 	private Boolean connected = false;
 
-	private SimpleDateFormat dateformat = new SimpleDateFormat("kk:mm:ss");
+	private final SimpleDateFormat dateformat = new SimpleDateFormat("kk:mm:ss");
 
 	private String username = "";
-	private ArrayList<String> userlist = new ArrayList<String>();
+	private final ArrayList<String> userlist = new ArrayList<String>();
 	private Boolean sendNameChangeRequest = false;
 
-	private Pattern commandpattern = Pattern.compile("([a-zA-Z]{4}) (.+)", Pattern.DOTALL);
-	private String noUserString = new String("No users in chat.");
+	private final Pattern commandpattern = Pattern.compile("([a-zA-Z]{4}) (.+)", Pattern.DOTALL);
+	private final String noUserString = new String("No users in chat.");
 
 	public Client() {
 		this.window = new Window();
@@ -53,11 +53,11 @@ public class Client {
 		this.window.addNameChangeListener(new NameChangeListener(this));
 	}
 
-	public void addOutput(String text) {
+	public void addOutput(final String text) {
 		this.window.addOutputText(getTimeStamp() + " " + text);
 	}
 
-	private void addUserListEntry(String name) {
+	private void addUserListEntry(final String name) {
 		this.userlist.add(name);
 		this.window.setUserlist(this.userlist);
 	}
@@ -125,7 +125,7 @@ public class Client {
 		this.conn.send("user all");
 	}
 
-	public void handleMessage(String message) {
+	public void handleMessage(final String message) {
 		System.out.println("Recieving Message: " + message);
 
 		try {
@@ -242,11 +242,11 @@ public class Client {
 		return this.connected;
 	}
 
-	public void logError(String msg) {
+	public void logError(final String msg) {
 		JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.OK_OPTION);
 	}
 
-	public void logError(Exception ex) {
+	public void logError(final Exception ex) {
 		StringBuilder bui = new StringBuilder();
 		bui.append(ex.getMessage());
 
@@ -277,7 +277,7 @@ public class Client {
 		this.window.setUserlist(this.userlist);
 	}
 
-	private void removeUserListEntry(String name) {
+	private void removeUserListEntry(final String name) {
 		this.userlist.remove(name);
 		this.window.setUserlist(this.userlist);
 	}
@@ -314,7 +314,7 @@ public class Client {
 		this.conn.send("name " + name);
 	}
 
-	private void setUserName(String name) {
+	private void setUserName(final String name) {
 		this.username = name;
 		this.window.setNameInputText(name);
 	}

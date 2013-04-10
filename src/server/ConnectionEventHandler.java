@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 
 import org.java_websocket.WebSocket;
 
-import Server.connectioncontext.ConnectionContext;
-import Server.connectioncontext.ConnectionContextHandler;
+import server.connectioncontext.ConnectionContext;
+import server.connectioncontext.ConnectionContextHandler;
 
 public class ConnectionEventHandler implements Runnable {
 
@@ -39,15 +39,15 @@ public class ConnectionEventHandler implements Runnable {
 	}
 
 	// private SimpleDateFormat dateFormat = new SimpleDateFormat( "HH:mm:ss:SSS" );
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-	private Pattern commandpattern = Pattern.compile("([a-zA-Z]{4}) (.+)", Pattern.DOTALL);
-	private Server server;
-	private WebSocket conn;
-	private List<String> users;
-	private String message;
-	private ConnectionEvent event;
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	private final Pattern commandpattern = Pattern.compile("([a-zA-Z]{4}) (.+)", Pattern.DOTALL);
+	private final Server server;
+	private final WebSocket conn;
+	private final List<String> users;
+	private final String message;
+	private final ConnectionEvent event;
 
-	public ConnectionEventHandler(Server server, WebSocket conn, List<String> users, ConnectionEvent event, String message) {
+	public ConnectionEventHandler(final Server server, final WebSocket conn, final List<String> users, final ConnectionEvent event, final String message) {
 		super();
 		this.server = server;
 		this.conn = conn;
@@ -95,11 +95,11 @@ public class ConnectionEventHandler implements Runnable {
 
 	}
 
-	private void onOpen(ConnectionContext context) {
+	private void onOpen(final ConnectionContext context) {
 		// empty Method for later events
 	}
 
-	private void onMessage(ConnectionContext context) {
+	private void onMessage(final ConnectionContext context) {
 		if (this.message == null) {
 			return;
 		}
@@ -169,7 +169,7 @@ public class ConnectionEventHandler implements Runnable {
 
 	}
 
-	private void onClose(ConnectionContext context) {
+	private void onClose(final ConnectionContext context) {
 		String name = context.getName();
 
 		if (null != name) {
@@ -180,7 +180,7 @@ public class ConnectionEventHandler implements Runnable {
 
 	}
 
-	public void sendFail(WebSocket conn, int code) {
+	public void sendFail(final WebSocket conn, final int code) {
 		this.server.send(conn, ConnectionEventHandler.Commands.FAIL + " " + code);
 	}
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package Server.connectioncontext;
+package server.connectioncontext;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Condition;
@@ -14,8 +14,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class ConnectionContextFuture implements Callable<ConnectionContext> {
 
-	private Lock lock = new ReentrantLock();
-	private Condition contextSetCond = this.lock.newCondition();
+	private final Lock lock = new ReentrantLock();
+	private final Condition contextSetCond = this.lock.newCondition();
 
 	private ConnectionContext context;
 
@@ -36,7 +36,7 @@ public final class ConnectionContextFuture implements Callable<ConnectionContext
 
 	}
 
-	public void setContext(ConnectionContext context) {
+	public void setContext(final ConnectionContext context) {
 		if (null != this.context) {
 			throw new IllegalStateException("Operation not allowed, ConnectionContext is allready set!");
 		}
