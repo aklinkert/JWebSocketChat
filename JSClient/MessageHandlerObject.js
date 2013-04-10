@@ -8,6 +8,13 @@ var MessageHandlerObject = function ( settings ) {
 	
 	/**
 	 * @private
+	 * @default SocketConnectionHandlerObject
+	 * @description The SocketConnection used for this Chat.
+	 */
+	this.connectionHandler = new SocketConnectionHandlerObject();
+	
+	/**
+	 * @private
 	 * @default RegEx
 	 * @description A regular expression to match an incoming command.
 	 * 
@@ -50,6 +57,8 @@ var MessageHandlerObject = function ( settings ) {
 	this.init = function ( ) {
 		that = this;
 		
+		this.connectionHandler.setMessageHandler ( this );
+		
 		if ( ! window.webkitNotifications )
 			this.outputMessage ( "Sorry , your browser does not support desktop notifications. Try Google Chrome." );
 		else
@@ -70,14 +79,14 @@ var MessageHandlerObject = function ( settings ) {
 		
 		this.settings.connectButton.on ( "click" , function ( ) {
 			try {
-				that.settings.connectionHandler.connect ( that.settings.urlInput.val ( ) );
+				that.connectionHandler.connect ( that.settings.urlInput.val ( ) );
 			}
 			catch ( e ) {
 				// logToConsole ( e.toString ( ) );
 			}
 		} );
 		this.settings.disconnectButton.on ( "click" , function ( ) {
-			that.settings.connectionHandler.close ( );
+			that.connectionHandler.close ( );
 		} );
 	};
 	
@@ -88,6 +97,7 @@ var MessageHandlerObject = function ( settings ) {
 	 * @description Handler-Method for incoming messages.
 	 */
 	this.handle = function ( msg ) {
+		var that = this;
 		var parts = msg.match ( this.commandpattern );
 		
 		if ( parts.length != 3 )
@@ -108,7 +118,7 @@ var MessageHandlerObject = function ( settings ) {
 					this.settings.userList.children ( ).remove ( "#" + "user_" + parts [ 2 ] );
 					
 					if ( this.settings.userList.children ( ).size ( ) == 0 )
-						this.appendUserListEntry ( this.createUserEntry ( this.settings.noUserID ).text ( "No user in this Chat." ) );
+						this.appendUserListEntry ( this.createUserEntry ( this.settings.noUserID ).text ( this.settings.nouserEntry ) );
 					
 					this.outputMessage ( this.getTimeStamp ( ) + " " + parts [ 2 ] + " left." );
 					
@@ -116,12 +126,16 @@ var MessageHandlerObject = function ( settings ) {
 				case "join" :
 
 					if ( parts [ 2 ] == this.userName || this.userName == "" ) {
-						this.userName = parts [ 2 ];
-						this.sendNameChangeRequest = false;
-						this.settings.toEnable.removeAttr ( "disabled" );
-						this.settings.nameInput.removeAttr ( "disabled" );
-						this.settings.inputField.removeAttr ( "disabled" );
-						this.getUserList ( );
+						
+						window.setTimeout(function () {
+							that.userName = parts [ 2 ];
+							that.sendNameChangeRequest = false;
+							that.settings.toEnable.removeAttr ( "disabled" );
+							that.settings.nameInput.removeAttr ( "disabled" );
+							that.settings.inputField.removeAttr ( "disabled" );
+							that.getUserList ( );
+						}, 250);
+						
 						return;
 					}
 					
@@ -134,7 +148,7 @@ var MessageHandlerObject = function ( settings ) {
 				case "user" :
 
 					if ( parseInt ( parts [ 2 ] ) == 0 || ( parts [ 2 ] == this.userName ) ) {
-						this.appendUserListEntry ( this.createUserEntry ( this.settings.noUserID ).text ( "No user in this Chat." ) );
+						this.appendUserListEntry ( this.createUserEntry ( this.settings.noUserID ).text ( this.settings.nouserEntry ) );
 						return;
 					}
 					
@@ -183,15 +197,8 @@ var MessageHandlerObject = function ( settings ) {
 					this.appendUserListEntry ( this.createUserEntry ( names [ 1 ] ) );
 					
 					break;
-				case "name" :
-
-					throw new ErrorObject ( "MessageHandlerObject", "handle", "The incoming message does contain the invalid command \"name\"." );
-					
-					break;
 				default :
 
-					throw new ErrorObject ( "MessageHandlerObject", "handle", "The incoming message does not contain a valid command." );
-					
 					break;
 			}
 		}
@@ -270,7 +277,7 @@ var MessageHandlerObject = function ( settings ) {
 	 * @description Handler-Method for outgoing messages.
 	 */
 	this.sendInput = function ( msg ) {
-		this.settings.connectionHandler.send ( "umsg " + msg );
+		this.connectionHandler.send ( "umsg " + msg );
 	};
 	
 	/**
@@ -282,7 +289,7 @@ var MessageHandlerObject = function ( settings ) {
 	this.setName = function ( ) {
 		
 		if ( ( this.settings.nameInput.val ( ) != this.userName ) && ( ! this.sendNameChangeRequest ) ) {
-			this.settings.connectionHandler.send ( "name " + this.settings.nameInput.attr ( "disabled" , true ).val ( ) );
+			this.connectionHandler.send ( "name " + this.settings.nameInput.attr ( "disabled" , true ).val ( ) );
 			this.sendNameChangeRequest = true;
 		}
 	};
@@ -293,7 +300,7 @@ var MessageHandlerObject = function ( settings ) {
 	 * @description Sends a command message to get the userList with all users, that are logged in at the moment.
 	 */
 	this.getUserList = function ( ) {
-		this.settings.connectionHandler.send ( "user all" );
+		this.connectionHandler.send ( "user all" );
 	};
 	
 	/**
@@ -339,11 +346,11 @@ var MessageHandlerObject = function ( settings ) {
 	 * @description Shows a desktop notification.
 	 */
 	this.showDesktopNotificationFunction = function ( text ) {
-		if ( typeof this.popup != "undefined" && this.pupup != null )
+		if ( typeof this.popup != "undefined" && this.popup != null )
 			return;
 		
 		if ( ! document.hasFocus ( ) ) {
-			this.popup = window.webkitNotifications.createNotification ( "message.png" , "JSWSMCC: New Message" , text );
+			this.popup = window.webkitNotifications.createNotification ( "http://www.iconeasy.com/icon/thumbnails/System/WebGloss%203D/Message%20Icon.jpg" , "New Message" , text );
 			this.popup.show ( );
 			setTimeout ( function ( ) {
 				that.popup.cancel ( );

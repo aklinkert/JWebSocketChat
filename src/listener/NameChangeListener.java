@@ -3,7 +3,8 @@ package listener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import Client.Client;
+import client.Client;
+
 
 public class NameChangeListener implements FocusListener {
 

@@ -3,7 +3,8 @@ package listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import Client.Client;
+import client.Client;
+
 
 public class CloseListener implements ActionListener {
 	Client client;

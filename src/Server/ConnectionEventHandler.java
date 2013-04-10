@@ -4,15 +4,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.java_websocket.WebSocket;
 
+import Server.connectioncontext.ConnectionContext;
+import Server.connectioncontext.ConnectionContextHandler;
+
 public class ConnectionEventHandler implements Runnable {
+
+	public enum ConnectionEvent {
+		OPEN, MESSAGE, CLOSE
+	}
 
 	public static final class ErrorCodes {
 
+		public static final int INVALIDCOMMAND = -1;
 		public static final int NOTNAMED = 0;
 		public static final int USERALLREADYEXIST = 1;
 	}
@@ -29,120 +39,163 @@ public class ConnectionEventHandler implements Runnable {
 	}
 
 	// private SimpleDateFormat dateFormat = new SimpleDateFormat( "HH:mm:ss:SSS" );
-	private SimpleDateFormat dateFormat = new SimpleDateFormat( "HH:mm:ss" );
-	private Pattern commandpattern = Pattern.compile( "([a-zA-Z]{4}) (.+)", Pattern.DOTALL );
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	private Pattern commandpattern = Pattern.compile("([a-zA-Z]{4}) (.+)", Pattern.DOTALL);
 	private Server server;
 	private WebSocket conn;
-	private ConnectionContext context;
 	private List<String> users;
 	private String message;
-	private String event;
+	private ConnectionEvent event;
 
-	public ConnectionEventHandler( Server server , WebSocket conn , ConnectionContext context , List<String> users , String event , String message ) {
+	public ConnectionEventHandler(Server server, WebSocket conn, List<String> users, ConnectionEvent event, String message) {
 		super();
 		this.server = server;
 		this.conn = conn;
-		this.context = context;
 		this.users = users;
 		this.event = event;
 		this.message = message;
 	}
 
+	@Override
 	public void run() {
-		if( event.equalsIgnoreCase( "message" ) )
-			onMessage();
-		else if( event.equalsIgnoreCase( "open" ) )
-			onOpen();
-		else if( event.equalsIgnoreCase( "close" ) )
-			onClose();
+		ConnectionContextHandler contextHandler = ConnectionContextHandler.getInstance();
+		Future<ConnectionContext> future = contextHandler.getContextFuture(this.conn);
+		ConnectionContext context = null;
+		try {
+			context = future.get();
+
+			if (null == context) {
+				throw new IllegalStateException("Failed to get Context.");
+			}
+
+			if (ConnectionEvent.OPEN == this.event) {
+				onOpen(context);
+			} else if (ConnectionEvent.MESSAGE == this.event) {
+				onMessage(context);
+			} else if (ConnectionEvent.CLOSE == this.event) {
+				onClose(context);
+			}
+
+		} catch (InterruptedException e) {
+			System.err.println("Error while waiting for ConnectionContextFuture result:");
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			System.err.println("Error while waiting for ConnectionContextFuture result:");
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			System.err.println("Error while getting ConnectionContextFuture result:");
+			e.printStackTrace();
+		} finally {
+			if (null == context) {
+				contextHandler.notifyNext(this.conn);
+			} else {
+				contextHandler.giveBack(this.conn, context);
+			}
+		}
+
 	}
 
-	private void onOpen() {
-		// void Method for later events
+	private void onOpen(ConnectionContext context) {
+		// empty Method for later events
 	}
 
-	private void onMessage() {
-		if( message == null )
+	private void onMessage(ConnectionContext context) {
+		if (this.message == null) {
 			return;
+		}
 
-		Matcher m = commandpattern.matcher( message );
+		Matcher m = this.commandpattern.matcher(this.message);
 
 		boolean found = m.find();
 
-		if( !context.isNameSet() && !found ) {
-			sendFail( conn, ErrorCodes.NOTNAMED );
+		if (null == context.getName() && !found) {
+			sendFail(this.conn, ErrorCodes.NOTNAMED);
 			return;
 		}
 
-		if( found ) {
-			String cmd = m.group( 1 );
+		if (!found) {
+			System.err.println("Error with incoming message: No command used!");
+			sendFail(this.conn, ErrorCodes.INVALIDCOMMAND);
+			return;
+		}
 
-			if( ConnectionEventHandler.Commands.NAME.equalsIgnoreCase( cmd ) ) {
+		String cmd = m.group(1);
 
-				if( !context.isNameSet() ) {
-					String name = m.group( 2 );
+		if (null == context.getName() && !ConnectionEventHandler.Commands.NAME.equalsIgnoreCase(cmd)) {
+			sendFail(this.conn, ErrorCodes.NOTNAMED);
+			return;
+		}
 
-					if( users.contains( name ) ) {
-						server.send( conn, ConnectionEventHandler.Commands.FAIL + " " + ConnectionEventHandler.ErrorCodes.USERALLREADYEXIST );
-						conn.close( 0, ConnectionEventHandler.Commands.FAIL + " " + ConnectionEventHandler.ErrorCodes.USERALLREADYEXIST );
-						return;
-					}
-					context.setName( name );
+		if (ConnectionEventHandler.Commands.NAME.equalsIgnoreCase(cmd)) {
 
-					server.dispatch( ConnectionEventHandler.Commands.JOIN + " " + name );
+			if (null == context.getName()) {
+				String name = m.group(2);
 
-					System.out.println( name + " joined" );
-					users.add( name );
-				} else {
-					String name = m.group( 2 );
-
-					if( users.contains( name ) ) {
-						server.send( conn, ConnectionEventHandler.Commands.FAIL + " " + ConnectionEventHandler.ErrorCodes.USERALLREADYEXIST );
-						return;
-					}
-
-					users.remove( context.getName() );
-					users.add( name );
-
-					server.dispatch( ConnectionEventHandler.Commands.INKA + " " + context.getName() + ":" + name );
-
-					context.setName( name );
+				if (this.users.contains(name)) {
+					this.server.send(this.conn, ConnectionEventHandler.Commands.FAIL + " " + ConnectionEventHandler.ErrorCodes.USERALLREADYEXIST);
+					this.conn.closeConnection(0, ConnectionEventHandler.Commands.FAIL + " " + ConnectionEventHandler.ErrorCodes.USERALLREADYEXIST);
+					return;
 				}
 
-			} else if( ConnectionEventHandler.Commands.USER.equalsIgnoreCase( cmd ) )
-				server.send( conn, "user " + getUsers() );
-			else if( ConnectionEventHandler.Commands.UMSG.equalsIgnoreCase( cmd ) )
-				server.dispatch( ConnectionEventHandler.Commands.UMSG + " " + dateFormat.format( new Date() ) + " " + context.getName() + ": " + m.group( 2 ) );
-			else
-				System.err.println( "Error with incoming message: Unknown command Type " + cmd + "!" );
-		} else
-			System.err.println( "Error with incoming message: No command used!" );
-	}
+				this.users.add(name);
+				this.server.dispatch(ConnectionEventHandler.Commands.JOIN + " " + name);
 
-	private void onClose() {
-		if( context.isNameSet() ) {
-			String name = context.getName();
-			users.remove( name );
-			server.dispatch( ConnectionEventHandler.Commands.LEFT + " " + name );
-			server.log( name + " left." );
+				System.out.println(name + " joined");
+				context.setName(name);
+
+			} else {
+				String name = m.group(2);
+
+				if (this.users.contains(name)) {
+					this.server.send(this.conn, ConnectionEventHandler.Commands.FAIL + " " + ConnectionEventHandler.ErrorCodes.USERALLREADYEXIST);
+					return;
+				}
+
+				this.users.remove(context.getName());
+				this.users.add(name);
+
+				this.server.dispatch(ConnectionEventHandler.Commands.INKA + " " + context.getName() + ":" + name);
+
+				context.setName(name);
+			}
+
+		} else if (ConnectionEventHandler.Commands.USER.equalsIgnoreCase(cmd)) {
+			this.server.send(this.conn, "user " + getUsers());
+		} else if (ConnectionEventHandler.Commands.UMSG.equalsIgnoreCase(cmd)) {
+			this.server.dispatch(ConnectionEventHandler.Commands.UMSG + " " + this.dateFormat.format(new Date()) + " " + context.getName() + ": " + m.group(2));
+		} else {
+			System.err.println("Error with incoming message: Unknown command Type " + cmd + "!");
 		}
+
 	}
 
-	public void sendFail( WebSocket conn, int code ) {
-		server.send( conn, ConnectionEventHandler.Commands.FAIL + " " + code );
+	private void onClose(ConnectionContext context) {
+		String name = context.getName();
+
+		if (null != name) {
+			this.users.remove(name);
+			this.server.dispatch(ConnectionEventHandler.Commands.LEFT + " " + name);
+			this.server.log(name + " left.");
+		}
+
+	}
+
+	public void sendFail(WebSocket conn, int code) {
+		this.server.send(conn, ConnectionEventHandler.Commands.FAIL + " " + code);
 	}
 
 	private String getUsers() {
 		// return users.toString();
 
-		if( users.isEmpty() )
+		if (this.users.isEmpty()) {
 			return "0";
+		}
 
-		Iterator<String> it = users.iterator();
+		Iterator<String> it = this.users.iterator();
 		String userList = it.next();
 
-		while ( it.hasNext() ) {
-			userList += "§§" + it.next();
+		while (it.hasNext()) {
+			userList += "Â§Â§" + it.next();
 		}
 
 		return userList;

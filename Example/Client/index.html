@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 		WEB_SOCKET_SWF_LOCATION = "/JavaScript/FlashFallback/WebSocketMain.swf";
-		WEBSOCKET_URL = "ws://jsserver.arda-network.de:444";
+		WEBSOCKET_URL = "ws://jswsmcc.arda-network.de:444";
 </script>
 
 <!-- External includes: FlashFallback and jQuery -->
@@ -16,8 +16,9 @@
 <script type="text/javascript" src="JavaScript/FlashFallback/web_socket.js"></script>
 
 <!-- OBJECTS: SocketConnection, MessageHandler and Project Object  -->
-<script type="text/javascript" src="JavaScript/Objects/SocketConnectionHandlerObject.js"></script>
-<script type="text/javascript" src="JavaScript/Objects/MessageHandlerObject.js"></script>
+<script type="text/javascript" src="../../JSClient/SocketConnectionHandlerObject.js"></script>
+<script type="text/javascript" src="../../JSClient/MessageHandlerObject.js"></script>
+<script type="text/javascript" src="../../JSClient/JSWSMCCObject.js"></script>
 <script type="text/javascript">
 
 $ ( document ).ready ( function ( ) {
@@ -31,23 +32,8 @@ $ ( document ).ready ( function ( ) {
 	
 	$ ( "#urlInput" ).val ( WEBSOCKET_URL );
 	
-	// The constructor needs a Settings-Object being given
-	messageHandler = new MessageHandlerObject ( {
-		container: $ ( "#messageOutput" ) ,
-		inputField: $ ( "#messageInput" ) ,
-		inputSubmitButton: $ ( "#messageInputSubmit" ) ,
-		userList: $ ( "#userList" ) ,
-		toEnable: $ ( ".toEnable" ) ,
-		toDisable: $ ( ".toDisable" ) ,
-		nameInput: $ ( "#nameInput" ) ,
-		urlInput: $ ( "#urlInput" ) ,
-		connectButton: $ ( "#btnConnect" ) ,
-		disconnectButton: $ ( "#btnDisconnect" ) ,
-		noUserID: "nouser",
-		nouserEntry: "No user in Chat."
-	} );
-	
-	messageHandler.init ( );
+	jswsmcc = new JSWSMCCObject();
+	jswsmcc.init();
 	
 } );
 

@@ -3,7 +3,8 @@ package listener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import Client.Client;
+import client.Client;
+
 
 public class InputKeyListener implements KeyListener {
 

@@ -42,10 +42,9 @@ var JSWSMCCObject = function ( ) {
 		urlInput: $ ( "#urlInput" ) ,
 		connectButton: $ ( "#btnConnect" ) ,
 		disconnectButton: $ ( "#btnDisconnect" ) ,
-		noUserID: "nouser"
+		noUserID: "nouser",
+		nouserEntry: "No user in Chat."
 		} );
-		
-		$ ( "#urlInput" ).val ( WEBSOCKET_URL_JSWSMCC );
 		
 		// Initialize default stuff
 		this.messageHandler.init ( );
